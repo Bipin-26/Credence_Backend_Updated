@@ -1,0 +1,6 @@
+{
+    "database":"mongodb",
+    "hostname":"localhost",
+    "port":27017,
+    "dbname":"Movie"
+}
