@@ -1,9 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const winston = require("winston")
-const bodyParser = require("body-parser")
-const router = express.Router()
+
 const app = express()
+
+const bodyParser=require("body-parser")
+
+app.use(bodyParser.urlencoded({extended: false}));
 
 const movielist= require('./data_modules/data.json')
 const server = require('./data_modules/server.json')
@@ -46,7 +49,6 @@ app.get('/display',(req,res)=>{
                     logger.info("No Movies Found")
                 }
                 else{
-                    console.log(docs)
                     res.send("Value found:\n"+docs)
                 }  
                 
@@ -70,6 +72,29 @@ app.post('/insert',(req,res)=>{
             else{
                 res.send("Values inserted successfully")
                 logger.info("Values added")
+            }
+        })
+    }
+    catch{
+        logger.error(err)
+    }
+})
+
+app.post('/insert_one',(req,res)=>{
+    try{
+        response={
+            "name":req.body.name,
+            "img":req.body.img,
+            "summary":req.body.summary
+        }
+        Movie.collection.insertOne(response,(err,docs)=>{
+            if(err){
+                res.send("Something went wrong....!!")
+                logger.error(err)
+            }
+            else{
+                res.send("Value added successfully..!!")
+                logger.info("value added")
             }
         })
     }
