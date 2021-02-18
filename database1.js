@@ -27,7 +27,13 @@ logger.add(new winston.transports.Console({
 }));
 }
 
-mongoose.connect(`${db['database']}://${db['hostname']}:${db['port']}/${db['dbname']}`);
+try{
+    mongoose.connect(`${db['database']}://${db['hostname']}:${db['port']}/${db['dbname']}`);
+    logger.info("Database Connection Successful")
+} catch (err){
+    logger.info("Connection Failed")
+    logger.error(err)
+}
 
 var movieSchema = new mongoose.Schema({
     name:String,
@@ -45,17 +51,17 @@ app.get('/display',(req,res)=>{
             }
             else{
                 if(docs.length == 0){
-                    res.send("No Movies Found")
+                    res.json({message:"No Movies found"})
                     logger.info("No Movies Found")
                 }
                 else{
-                    res.send("Value found:\n"+docs)
+                    res.json({message:"Value found",values:docs})
                 }  
                 
             }
         })
     } catch(err){
-        res.send("Something went wrong")
+        res.json({message:"Something went wrong. Cant add value"})
         logger.error(err)
     }
     
@@ -67,10 +73,10 @@ app.post('/insert',(req,res)=>{
         Movie.collection.insertMany(movielist,(err,docs)=>{
             if(err){
                 logger.error(err)
-                res.send("Something went wrong....!!!")
+                res.json({message:"Something went wrong. Cant add value"})
             }
             else{
-                res.send("Values inserted successfully")
+                res.json({message:"Values added successfully",TotalCount:`${docs['insertedCount']}`})
                 logger.info("Values added")
             }
         })
@@ -89,12 +95,12 @@ app.post('/insert_one',(req,res)=>{
         }
         Movie.collection.insertOne(response,(err,docs)=>{
             if(err){
-                res.send("Something went wrong....!!")
+                res.json({message:"Something went wrong. Cant add value"})
                 logger.error(err)
             }
             else{
-                res.send("Value added successfully..!!")
-                logger.info("value added")
+                res.json({message:"Value added successfully.....!!!",id:docs['insertedId']})
+                logger.info("Value added")
             }
         })
     }
@@ -105,6 +111,11 @@ app.post('/insert_one',(req,res)=>{
 
 app.listen(server['port'],()=>{
     console.log(`Server running at http://${server['hostname']}:${server['port']}`);
+}).on('error',(err)=>{
+    if (err.code === 'EADDRINUSE'){
+        logger.error(err)
+    }
 });
+
 
 
