@@ -6,4 +6,6 @@ pip install -r requirements.txt
 Also check the package.json, you can install all required dependencies by using command:
 npm install
 
+Use pm2 command to run the node file in background
+
 (Note :- Make a sure that you create a virtual env and activate it before installing dependencies)
