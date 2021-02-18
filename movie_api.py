@@ -35,9 +35,9 @@ def insert():
         }
         insert_query = mycollection.insert_one(movie)
         if(insert_query.inserted_id):        
-            return Response(response=json.dumps({"message":"Value inserted","id":f"{insert_query.inserted_id}"}), status=200, mimetype="application/json")
+            return Response(response=json.dumps({"message":"Value inserted","id":f"{insert_query.inserted_id}"}), status=200)
         else:
-            return Response(response=json.dumps({"message":"Value cannot be inserted"}), status=500, mimetype="application/json")
+            return Response(response=json.dumps({"message":"Value cannot be inserted"}), status=500)
     except Exception as err:
         return server_error(err)
         
@@ -51,7 +51,7 @@ def display_movie_list():
         if len(docs) == 0:
             return Response(response=json.dumps({"message":"No Movies Found"}),status=500)
         else:
-            return Response(response=json.dumps(docs))
+            return Response(response=json.dumps(docs),status=200)
     except Exception as err:
         return server_error(err)
 
